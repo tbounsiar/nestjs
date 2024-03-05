@@ -42,7 +42,7 @@ allowing you to secure your web applications quickly and efficiently.
 You can install the library via npm:
 
 ```bash
-npm install nestjs-security
+npm install @tbnestjs/security
 ```
 
 ## Features
@@ -71,7 +71,7 @@ mechanism.
 import {
     SecurityConfig,
     SecurityModule,
-} from '@nestjs/security';
+} from '@tbnestjs/security';
 
 // Use SecurityConfig.builder() to build the security mechanism configuration
 const builder = SecurityConfig.builder();
@@ -615,8 +615,8 @@ This decorator allows you to access information about the authenticated user, in
 other relevant details.
 
 ```typescript
-import {Controller, Get} from '@nestjs/common';
-import {Authentication} from '@nestjs/security';
+import {Controller, Get} from '@tbnestjs/common';
+import {Authentication} from '@tbnestjs/security';
 
 @Controller('profile')
 export class ProfileController {
@@ -635,8 +635,8 @@ decorator integrates with the guard system in NestJS, allowing you to specify fi
 user roles, authorities, or other conditions.
 
 ```typescript
-import {Controller, Get} from '@nestjs/common';
-import {PreAuthorize} from '@nestjs/security';
+import {Controller, Get} from '@tbnestjs/common';
+import {PreAuthorize} from '@tbnestjs/security';
 
 @Controller('admin')
 export class AdminController {
