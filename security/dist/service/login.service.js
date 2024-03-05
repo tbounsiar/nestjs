@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LoginPageService = void 0;
+exports.LoginService = void 0;
 const common_1 = require("@nestjs/common");
 const template_1 = require("../core/utils/template");
 const authenticationProvider_1 = require("../core/auth/abstract/authenticationProvider");
@@ -18,27 +18,28 @@ const sessionAuthenticationProvider_1 = require("../core/auth/impl/sessionAuthen
 /**
  * @internal
  */
-let LoginPageService = class LoginPageService {
-    constructor(authenticationProvider, authenticator) {
+let LoginService = class LoginService {
+    constructor(authenticationProvider, authenticator, formLogin) {
         this.authenticationProvider = authenticationProvider;
         this.authenticator = authenticator;
+        this.formLogin = formLogin;
         this.extractor = this.authenticationProvider.credentialsExtractor();
     }
-    loginPage(request, response, formLogin) {
+    loginPage(request, response) {
         const requestAuthentication = this.authenticationProvider.getAuthentication(request);
         if (requestAuthentication.isAuthenticated()) {
-            this.redirect(request, response, formLogin);
+            this.redirect(request, response, this.formLogin);
         }
         else {
-            let loginUrl = formLogin.loginUrl() || sessionAuthenticationProvider_1.FormLogin.DEFAULT_LOGIN_URL;
-            if (!formLogin.redirectUrl() && request.query.from) {
+            let loginUrl = this.formLogin.loginUrl() || sessionAuthenticationProvider_1.FormLogin.DEFAULT_LOGIN_URL;
+            if (!this.formLogin.redirectUrl() && request.query.from) {
                 loginUrl += '?from=' + request.query.from;
             }
             response.type('text/html');
             response.send((0, template_1.loginTemplate)(loginUrl));
         }
     }
-    login(request, response, formLogin) {
+    login(request, response) {
         var _a, _b;
         let credentials = {
             username: (_a = request.body) === null || _a === void 0 ? void 0 : _a.login,
@@ -49,11 +50,11 @@ let LoginPageService = class LoginPageService {
         }
         const authentication = this.authenticator.authenticate(credentials === null || credentials === void 0 ? void 0 : credentials.username, credentials === null || credentials === void 0 ? void 0 : credentials.password);
         this.authenticationProvider.setAuthentication(request, authentication);
-        this.redirect(request, response, formLogin);
+        this.redirect(request, response, this.formLogin);
     }
-    logout(request, response, formLogin) {
+    logout(request, response) {
         this.authenticationProvider.setAuthentication(request, null);
-        this.redirect(request, response, formLogin);
+        this.redirect(request, response, this.formLogin);
     }
     redirect(request, response, formLogin) {
         var _a;
@@ -67,9 +68,10 @@ let LoginPageService = class LoginPageService {
         response.status(302).redirect(redirect);
     }
 };
-exports.LoginPageService = LoginPageService;
-exports.LoginPageService = LoginPageService = __decorate([
+exports.LoginService = LoginService;
+exports.LoginService = LoginService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [authenticationProvider_1.AuthenticationProvider,
-        authenticator_1.Authenticator])
-], LoginPageService);
+        authenticator_1.Authenticator,
+        sessionAuthenticationProvider_1.FormLogin])
+], LoginService);

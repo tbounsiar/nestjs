@@ -12,7 +12,7 @@ const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const security_guard_1 = require("../guard/security.guard");
 const login_controller_1 = require("../controller/login.controller");
-const login_page_service_1 = require("../service/login-page.service");
+const login_service_1 = require("../service/login.service");
 const reflector_service_1 = require("@nestjs/core/services/reflector.service");
 const provider_1 = require("../core/auth/provider");
 const security_exception_filter_1 = require("../filter/security-exception.filter");
@@ -55,15 +55,22 @@ let SecurityModule = SecurityModule_1 = class SecurityModule {
             },
             reflector_service_1.Reflector,
         ];
+        // @ts-ignore
         const exports = [];
         if (authenticationProvider.authenticateType() === authenticationProvider_1.AuthenticateType.FORM_LOGIN) {
             this.logger.warn(sessionAuthenticationProvider_1.sessionAndFormMessage);
             // this.logger.warn(`Be sure to set application session. app.use(session({secret: "secret"}));`);
             const formLogin = authenticationProvider.formLogin();
-            if (!formLogin.loginPage()) {
+            providers.push({
+                provide: sessionAuthenticationProvider_1.FormLogin,
+                useValue: formLogin
+            });
+            if (formLogin.isDefaultEnabled()) {
                 controllers.push((0, login_controller_1.createLoginController)(formLogin));
-                providers.push(login_page_service_1.LoginPageService);
-                exports.push(login_page_service_1.LoginPageService);
+            }
+            if (formLogin.isLoginService()) {
+                providers.push(login_service_1.LoginService);
+                exports.push(login_service_1.LoginService);
             }
         }
         return {

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HttpSecurity = void 0;
+const common_1 = require("@nestjs/common");
 const authorizeRequests_1 = require("./authorizeRequests");
-const path_to_regexp_1 = require("path-to-regexp");
+const utils_1 = require("../utils/utils");
 class HttpSecurity {
     /**
      * @internal
@@ -14,15 +15,9 @@ class HttpSecurity {
      */
     builder) {
         this.builder = builder;
-        /**
-         * @internal
-         * @private
-         */
-        this._authorizeRequests = [];
     }
     authorize(authorizeRequests) {
-        this._authorizeRequests.push(authorizeRequests instanceof authorizeRequests_1.AuthorizeRequests ?
-            authorizeRequests : authorizeRequests.build());
+        this._authorizeRequests = authorizeRequests instanceof authorizeRequests_1.AuthorizeRequests ? authorizeRequests : authorizeRequests.build();
         return this;
     }
     // cors(options?: CorsOptions | CorsOptionsDelegate<any>): HttpSecurity {
@@ -34,20 +29,16 @@ class HttpSecurity {
      * @param path
      * @param method
      */
-    getMatchers(path, method) {
-        return this._authorizeRequests
-            .reduce((acc, authorize) => {
-            return acc.concat(authorize.matchers());
-        }, []).filter((matcher) => {
-            const regex = (0, path_to_regexp_1.pathToRegexp)(matcher.regex());
-            if (regex.test(path)) {
-                if (matcher.methods().length > 0) {
-                    return matcher.methods().includes(method);
-                }
-                return true;
+    getPermission(path, method) {
+        let permissions;
+        const matchers = this._authorizeRequests.matchers();
+        for (let regex in matchers) {
+            const pathRegex = (0, utils_1.pathToRegex)(regex);
+            if (pathRegex.test(path)) {
+                permissions = matchers[regex];
             }
-            return false;
-        });
+        }
+        return permissions ? permissions[method] || permissions[common_1.RequestMethod.ALL] : [];
     }
     and() {
         return this.builder;

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RequestMatcherBuilder = exports.RequestMatcher = void 0;
+const common_1 = require("@nestjs/common");
 class RequestMatcher {
     /**
      * @internal
@@ -12,7 +13,7 @@ class RequestMatcher {
     /**
      * @internal
      */
-    _methods, 
+    _method, 
     /**
      * @internal
      */
@@ -21,16 +22,25 @@ class RequestMatcher {
      * @internal
      */
     _regex) {
-        this._methods = _methods;
+        this._method = _method;
         this._permissions = _permissions;
         this._regex = _regex;
     }
-    methods() {
-        return this._methods || [];
+    /**
+     * @internal
+     */
+    method() {
+        return this._method || common_1.RequestMethod.ALL;
     }
+    /**
+     * @internal
+     */
     regex() {
         return this._regex;
     }
+    /**
+     * @internal
+     */
     permissions() {
         return this._permissions;
     }
@@ -55,8 +65,8 @@ class RequestMatcherBuilder {
         this._regex = regex;
         return this;
     }
-    withMethod(...methods) {
-        this._methods = methods;
+    withMethod(method) {
+        this._method = method;
         return this;
     }
     permitAll() {
@@ -84,7 +94,7 @@ class RequestMatcherBuilder {
         return this;
     }
     build() {
-        return new RequestMatcher(this._methods, this._permissions, this._regex);
+        return new RequestMatcher(this._method, this._permissions, this._regex);
     }
 }
 exports.RequestMatcherBuilder = RequestMatcherBuilder;

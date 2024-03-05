@@ -9,6 +9,6 @@ export declare class JwtTokenParser implements TokenParser {
     private jwt;
     constructor(secret: string, jwt: any);
     parse(token: string): RequestAuthentication;
-    jwtDataExtractor(jwtAuthorization: JwtDataExtractor): JwtTokenParser;
-    jwtDataExtractor(): JwtDataExtractor;
+    dataExtractor(jwtAuthorization: JwtDataExtractor): JwtTokenParser;
+    dataExtractor(): JwtDataExtractor;
 }

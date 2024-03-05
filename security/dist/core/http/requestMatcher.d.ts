@@ -1,13 +1,10 @@
 import { RequestMethod } from '@nestjs/common';
 export declare class RequestMatcher {
-    methods(): RequestMethod[];
-    regex(): (string | RegExp)[];
-    permissions(): string[];
     static builder(): RequestMatcherBuilder;
 }
 export declare class RequestMatcherBuilder {
     requestMatcher(...regex: (string | RegExp)[]): this;
-    withMethod(...methods: RequestMethod[]): this;
+    withMethod(method: RequestMethod): this;
     permitAll(): this;
     hasRole(role: string): this;
     hasAnyRoles(...roles: string[]): this;

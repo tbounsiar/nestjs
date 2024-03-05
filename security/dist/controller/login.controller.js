@@ -14,27 +14,25 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createLoginController = void 0;
 const common_1 = require("@nestjs/common");
-const login_page_service_1 = require("../service/login-page.service");
+const login_service_1 = require("../service/login.service");
 const sessionAuthenticationProvider_1 = require("../core/auth/impl/sessionAuthenticationProvider");
 /**
  * @internal
  * @param formLogin
  */
 const createLoginController = (formLogin) => {
-    var LoginController_1;
-    let LoginController = LoginController_1 = class LoginController {
-        constructor(authenticationService) {
-            this.authenticationService = authenticationService;
-            this.logger = new common_1.Logger(LoginController_1.name);
+    let LoginController = class LoginController {
+        constructor(loginService) {
+            this.loginService = loginService;
         }
         page(request, response) {
-            this.authenticationService.loginPage(request, response, formLogin);
+            this.loginService.loginPage(request, response);
         }
         login(request, response) {
-            this.authenticationService.login(request, response, formLogin);
+            this.loginService.login(request, response);
         }
         logout(request, response) {
-            this.authenticationService.logout(request, response, formLogin);
+            this.loginService.logout(request, response);
         }
     };
     __decorate([
@@ -61,9 +59,9 @@ const createLoginController = (formLogin) => {
         __metadata("design:paramtypes", [Object, Object]),
         __metadata("design:returntype", void 0)
     ], LoginController.prototype, "logout", null);
-    LoginController = LoginController_1 = __decorate([
+    LoginController = __decorate([
         (0, common_1.Controller)(),
-        __metadata("design:paramtypes", [login_page_service_1.LoginPageService])
+        __metadata("design:paramtypes", [login_service_1.LoginService])
     ], LoginController);
     return LoginController;
 };

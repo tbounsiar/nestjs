@@ -1,29 +1,30 @@
 /**
  * Interface to implement a new Request Authentication
  */
-export interface RequestAuthentication {
+export declare abstract class RequestAuthentication {
+    abstract getUsername(): string;
     /**
      * Check if authentication has an authority
      * @param authority {string}: The authority
      */
-    hasAuthority(authority: string): boolean;
+    abstract hasAuthority(authority: string): boolean;
     /**
      * Check if authentication has any of authorities
      * @param authorities {string[]}: The authorities
      */
-    hasAnyAuthorities(...authorities: string[]): boolean;
+    abstract hasAnyAuthorities(...authorities: string[]): boolean;
     /**
      * Check if role has an authority
      * @param role {string}: The role
      */
-    hasRole(role: string): boolean;
+    abstract hasRole(role: string): boolean;
     /**
      * Check if authentication has any of roles
      * @param roles {string[]}: The roles
      */
-    hasAnyRoles(...roles: string[]): boolean;
+    abstract hasAnyRoles(...roles: string[]): boolean;
     /**
      * Check if Http Request is authenticated
      */
-    isAuthenticated(): boolean;
+    abstract isAuthenticated(): boolean;
 }

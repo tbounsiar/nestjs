@@ -19,7 +19,7 @@ class WebAuthenticationProvider extends wwwAuthenticationProvider_1.WWWAuthentic
      * @internal
      * @param request
      */
-    getAuthentication(request) {
+    buildAuthentication(request) {
         const authentication = this.getUserAuthentication(request);
         return new requestAuthenticationImpl_1.RequestAuthenticationImpl(authentication);
     }

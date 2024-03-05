@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generate = exports.getMatchExpression = void 0;
+exports.generate = exports.pathToRegex = exports.getMatchExpression = void 0;
+const path_to_regexp_1 = require("path-to-regexp");
 /**
  * @internal
  * @param matchers
@@ -19,6 +20,16 @@ function getMatchExpression(matchers) {
     return expression;
 }
 exports.getMatchExpression = getMatchExpression;
+/**
+ * @internal
+ * Fix pathToRegexp bug
+ * @param regex
+ */
+function pathToRegex(...regex) {
+    const source = (0, path_to_regexp_1.pathToRegexp)(regex).source.replace(/\[\\\/#\\\?\]\?\$/g, '');
+    return new RegExp(source + '(?:[\\/#\\?].*)?$');
+}
+exports.pathToRegex = pathToRegex;
 /**
  * @internal
  * @param length

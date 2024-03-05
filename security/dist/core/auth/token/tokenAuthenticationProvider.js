@@ -17,7 +17,7 @@ class TokenAuthenticationProvider extends wwwAuthenticationProvider_1.WWWAuthent
     /**
      * @internal
      */
-    getAuthentication(request) {
+    buildAuthentication(request) {
         let authorization = this.getAuthorization(request);
         return this._tokenParser.parse(authorization ? authorization[1] : undefined);
     }

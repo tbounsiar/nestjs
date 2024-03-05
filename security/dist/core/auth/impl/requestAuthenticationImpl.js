@@ -10,9 +10,13 @@ class RequestAuthenticationImpl {
         this.roles = [];
         this.authorities = [];
         if (authentication) {
+            this.username = authentication.username;
             this.authorities = authentication.authorities || [];
             this.roles = authentication.roles || [];
         }
+    }
+    getUsername() {
+        return this.username;
     }
     hasAuthority(authority) {
         return this.authorities.indexOf(authority) !== -1;

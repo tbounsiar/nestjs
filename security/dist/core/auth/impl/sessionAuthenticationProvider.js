@@ -23,7 +23,7 @@ class SessionAuthenticationProvider extends requestAuthenticationProvider_1.Requ
         this._formLogin = formLogin;
         return this;
     }
-    getAuthentication(request) {
+    buildAuthentication(request) {
         if (!request.session) {
             throw new Error(exports.sessionAndFormMessage);
         }
@@ -46,6 +46,12 @@ class FormLogin {
      * @internal
      */
     constructor() {
+        /**
+         * @internal
+         * @private
+         */
+        this.defaultEnabled = true;
+        this.loginService = true;
     }
     static new() {
         return new this();
@@ -76,6 +82,23 @@ class FormLogin {
             return this._redirectUrl;
         }
         this._redirectUrl = redirectUrl;
+        return this;
+    }
+    /**
+     * @internal
+     */
+    isDefaultEnabled() {
+        return this.defaultEnabled;
+    }
+    disableDefault() {
+        this.defaultEnabled = false;
+        return this;
+    }
+    isLoginService() {
+        return this.loginService;
+    }
+    disableLoginService() {
+        this.loginService = false;
         return this;
     }
 }

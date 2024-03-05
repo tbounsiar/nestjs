@@ -1,11 +1,14 @@
 import { RequestAuthentication } from './requestAuthentication';
+export declare const Authentication: (...dataOrPipes: (string | import("@nestjs/common").PipeTransform<any, any> | import("@nestjs/common").Type<import("@nestjs/common").PipeTransform<any, any>>)[]) => ParameterDecorator;
 /**
  * Interface to implement an Authentication Provider
  */
 export declare abstract class AuthenticationProvider {
+    getAuthentication(request: any): RequestAuthentication;
     /**
-     * Get Authentication from request
-     * @param request {any}: The http request
+     * Build Authentication using request
+     * @param request
+     * @protected
      */
-    abstract getAuthentication(request: any): RequestAuthentication;
+    protected abstract buildAuthentication(request: any): RequestAuthentication;
 }

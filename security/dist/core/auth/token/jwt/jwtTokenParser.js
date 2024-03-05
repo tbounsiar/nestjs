@@ -34,7 +34,7 @@ class JwtTokenParser {
             throw new tokenError_1.TokenError('Invalid Token', 'invalid_token', error.message);
         }
     }
-    jwtDataExtractor(jwtAuthorization) {
+    dataExtractor(jwtAuthorization) {
         if (!jwtAuthorization) {
             return this._jwtDataExtractor;
         }

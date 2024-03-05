@@ -46,9 +46,10 @@ exports.md5 = md5;
 /**
  * @internal
  * @param input
+ * @param encoding
  */
-function base64Encode(input) {
-    return Buffer.from(input, 'utf8').toString('base64');
+function base64Encode(input, encoding = 'utf-8') {
+    return Buffer.from(input, encoding).toString('base64');
 }
 exports.base64Encode = base64Encode;
 /**

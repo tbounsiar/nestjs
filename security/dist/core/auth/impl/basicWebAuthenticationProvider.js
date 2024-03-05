@@ -43,7 +43,7 @@ class BasicWebAuthenticationProvider extends webAuthenticationProvider_1.WebAuth
      */
     parse(authorization) {
         // decode user pass
-        const userPassword = USER_PASS_REGEXP.exec((0, crypto_utils_1.base64Decode)(authorization[1]));
+        const userPassword = USER_PASS_REGEXP.exec((0, crypto_utils_1.base64Decode)(authorization[1], this._charset));
         if (!userPassword) {
             return undefined;
         }

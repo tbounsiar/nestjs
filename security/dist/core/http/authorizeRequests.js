@@ -7,18 +7,35 @@ class AuthorizeRequests {
      * @internal
      * @param requestMatchers
      */
-    constructor(
-    /**
-     * @internal
-     */
-    requestMatchers) {
-        this.requestMatchers = requestMatchers;
+    constructor(requestMatchers) {
+        /**
+         * @internal
+         */
+        this.permissions = {};
+        requestMatchers.forEach(requestMatcher => {
+            requestMatcher.regex().forEach(regex => {
+                const key = regex instanceof RegExp ? regex.source : regex;
+                if (this.permissions[key]) {
+                    if (this.permissions[key][requestMatcher.method()]) {
+                        this.permissions[key][requestMatcher.method()].push(...requestMatcher.permissions());
+                    }
+                    else {
+                        this.permissions[key][requestMatcher.method()] = requestMatcher.permissions();
+                    }
+                }
+                else {
+                    this.permissions[key] = {
+                        [requestMatcher.method()]: requestMatcher.permissions(),
+                    };
+                }
+            });
+        });
     }
     static builder() {
         return new AuthorizeRequestsBuilder();
     }
     matchers() {
-        return this.requestMatchers;
+        return this.permissions || {};
     }
 }
 exports.AuthorizeRequests = AuthorizeRequests;

@@ -12,14 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.SecurityGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
-const utils_1 = require("../core/utils/utils");
 const preAuthorize_decorator_1 = require("./decorator/preAuthorize.decorator");
-const path_to_regexp_1 = require("path-to-regexp");
 const authenticationProvider_1 = require("../core/auth/abstract/authenticationProvider");
 const httpSecurity_1 = require("../core/http/httpSecurity");
 const authErrorHandling_1 = require("../core/auth/abstract/authErrorHandling");
 const sessionAuthenticationProvider_1 = require("../core/auth/impl/sessionAuthenticationProvider");
 const requestMatcher_1 = require("../core/http/requestMatcher");
+const utils_1 = require("../core/utils/utils");
 /**
  * @internal
  */
@@ -37,8 +36,7 @@ let SecurityGuard = class SecurityGuard {
                 new RegExp(formLogin.loginUrl() || sessionAuthenticationProvider_1.FormLogin.DEFAULT_LOGIN_URL).source,
                 new RegExp(formLogin.logoutUrl() || sessionAuthenticationProvider_1.FormLogin.DEFAULT_LOGOUT_URL).source,
             ];
-            const source = (0, path_to_regexp_1.pathToRegexp)(loginUrls).source.replace(/\[\\\/#\\\?\]\?\$/g, '');
-            this.loginRegex = new RegExp(source + '(?:[\\/#\\?].*)?$');
+            this.loginRegex = (0, utils_1.pathToRegex)(...loginUrls);
         }
     }
     canActivate(context) {
@@ -61,14 +59,14 @@ let SecurityGuard = class SecurityGuard {
         const request = context.switchToHttp().getRequest();
         const method = common_1.RequestMethod[request.method];
         const path = request.originalUrl;
-        const matchers = this.httpSecurity.getMatchers(path, method);
-        if (matchers.length > 0) {
-            const permitAll = matchers.find((matcher) => matcher.permissions().indexOf(requestMatcher_1.RequestMatcher.PERMIT_ALL) !== -1);
-            if (permitAll && this.validateDecorator(context, permitAll)) {
+        const permissions = this.httpSecurity.getPermission(path, method);
+        if (permissions.length > 0) {
+            const permitAll = permissions.find(permission => permission === requestMatcher_1.RequestMatcher.PERMIT_ALL);
+            if (permitAll) {
                 return true;
             }
             const expressions = [];
-            const matchExpression = (0, utils_1.getMatchExpression)(matchers);
+            const matchExpression = permissions.map(permission => `authentication.${permission}`).join(' || ');
             if (matchExpression) {
                 expressions.push(matchExpression);
             }
@@ -145,12 +143,12 @@ let SecurityGuard = class SecurityGuard {
         }
         return undefined;
     }
-    validateDecorator(context, permitAll = false) {
+    validateDecorator(context) {
         const expression = this.getDecoratorExpression(context);
         if (expression) {
             return this.validatePermission(context, expression);
         }
-        return permitAll || this.validatePermission(context);
+        return this.validatePermission(context);
     }
 };
 exports.SecurityGuard = SecurityGuard;
